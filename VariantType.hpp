@@ -28,12 +28,12 @@ public:
      * standardized method of object construction.  For example 
      *      DestructivePotato potato{argument_list}
      */
-    explicit VariantType(const char*);
-    explicit VariantType(const std::string&);
-    explicit VariantType(std::string&&);
-    explicit VariantType(double);
-    explicit VariantType(int);
-    explicit VariantType(bool);
+    VariantType(const char*);
+    VariantType(const std::string&);
+    VariantType(std::string&&);
+    VariantType(double);
+    VariantType(int);
+    VariantType(bool);
     VariantType& operator=(VariantType&& other);
 
     /*
@@ -60,12 +60,12 @@ public:
      * VariantType is to be returned.  For example doing 
      *      if (static_cast<int>(variant_type_object) < 2) 
      * will be legal.  These will cry and fail if you try to convert a type to
-     * another that does not exist. 
+     * another that does not exist.  
      */
-    operator const std::string&() const;
-    operator double() const;
-    operator int() const;
-    operator bool() const;
+    explicit operator const std::string&() const;
+    explicit operator double() const;
+    explicit operator int() const;
+    explicit operator bool() const;
 
     /*
      * Make friends!
@@ -79,13 +79,14 @@ public:
      * The implementation of this variant type
      */
     class Impl;
-    friend class Impl;
 
     /*
-     * operator to cout
+     * make friends!
      */
     friend std::ostream& operator<<(std::ostream& os,
             const VariantType::Impl& impl);
+    friend class Impl;
+
     /*
      * The opaque pointer idiom.  We do not want you to see how this class is
      * implemented!  Something to think about though - everything in python is
@@ -111,3 +112,4 @@ namespace std {
  * any other ostream object for example ostringstream.  
  */
 std::ostream& operator<<(std::ostream& os, const VariantType& variant_type);
+

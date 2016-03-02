@@ -19,12 +19,12 @@ void print_element(ELEMENT ele) {
 }
 
 // Unit tests
-void run_tests();
-void test_not_equals_operator();
-void test_less_than_operator();
-void test_greater_than_operator();
-void test_equals_operator();
-void test_copy_constructor();
+extern void run_tests();
+extern void test_not_equals_operator();
+extern void test_less_than_operator();
+extern void test_greater_than_operator();
+extern void test_equals_operator();
+extern void test_copy_constructor();
 
 int main() {
 
@@ -49,49 +49,3 @@ int main() {
     return 0;
 }
 
-void test_not_equals_operator() {
-
-    VariantType obj1 {true};
-    VariantType obj2 {false};
-
-    VariantType obj3 {"aary"};
-    VariantType obj4 {"aary"};
-    assert_variant(obj3 == obj4);
-}
-void test_less_than_operator() {
-    VariantType obj1 {1};
-    VariantType obj2 {2};
-    assert_variant(obj1 < obj2);
-
-    obj1 = std::move(VariantType{2});
-    assert_variant(!(obj1 < obj2));
-}
-void test_greater_than_operator() {
-    VariantType obj1 {1};
-    VariantType obj2 {2};
-    assert_variant(obj2 > obj1);
-
-    obj1 = std::move(VariantType{2});
-    assert_variant(!(obj1 > obj2));
-}
-void test_equals_operator() {
-    VariantType obj1 {1};
-    VariantType obj2 {1};
-    assert_variant(obj1 == obj2);
-
-    VariantType other_type{"what?"};
-    try {
-        assert_variant(obj1 == other_type);
-    } catch(std::exception& exc) {
-    } catch(...) {
-        throw std::logic_error("Comparing objects of different types did not "
-                "fail");
-    }
-}
-
-void run_tests() {
-    test_not_equals_operator();
-    test_less_than_operator();
-    test_greater_than_operator();
-    test_equals_operator();
-}
