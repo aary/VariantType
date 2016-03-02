@@ -28,17 +28,6 @@ extern void test_copy_constructor();
 
 int main() {
 
-    VariantType obj3{"eecs281"};
-    VariantType obj4{"eecs482"};
-
-    set<VariantType> set_of_variants;
-    set_of_variants.insert(std::move(obj3));
-    set_of_variants.insert(std::move(obj4));
-
-    for (const auto& ele : set_of_variants) {
-        cout << ele << endl;
-    }
-
     try {
         run_tests();
     } catch(std::exception& exc) {
@@ -48,4 +37,3 @@ int main() {
 
     return 0;
 }
-

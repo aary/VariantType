@@ -63,6 +63,7 @@ std::ostream& operator<<(std::ostream& os, const VariantType& variant_type) {
     return os;
 }
 
-// size_t std::hash<VariantType>::operator() (const VariantType& variant_type) {
-//     return std::hash<VariantType>()(*variant_type.implementation);
-// }
+size_t std::hash<VariantType>::operator() (const VariantType& variant_type) 
+        const {
+    return std::hash<VariantType::Impl>()(*variant_type.implementation);
+}

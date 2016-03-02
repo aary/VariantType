@@ -2,10 +2,10 @@
 #include "VariantTypeImpl.hpp"
 #include <new>
 #include <string>
-using std::string;
 #include <cassert>
 #include <functional>
 #include <iostream>
+using std::string;
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -214,3 +214,18 @@ std::ostream& operator<<(std::ostream& os, const VariantType::Impl& impl) {
     return os;
 }
 
+// The specialized hash function for the Impl class
+size_t std::hash<VariantType::Impl>::operator()(
+        const VariantType::Impl& impl) const {
+
+    return switch_return_type_with([](const auto& element) {
+
+        // what?? the following is to remove all const and reference qualifiers
+        // from the type of the object `element`
+        using const_reference_removed_type = 
+            typename std::remove_const<
+                typename std::remove_reference<decltype(element)>::type>::type;
+
+        return std::hash<const_reference_removed_type>()(element);
+    }, impl);
+}

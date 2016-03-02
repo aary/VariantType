@@ -12,6 +12,10 @@ using std::cerr;
 #include <stdexcept>
 using std::exception;
 using std::logic_error;
+#include <unordered_map>
+using std::unordered_map;
+#include <map>
+using std::map;
 
 void test_not_equals_operator() {
 
@@ -58,9 +62,35 @@ void test_equals_operator() {
     }
 }
 
+void test_inclusion_maps() {
+
+    // make a std::set with VariantType objects
+    std::set<VariantType> set_objects;
+    set_objects.emplace("dog");
+    set_objects.emplace("cat");
+    for (const auto& obj : set_objects) {
+        cout << obj << endl;
+    }
+
+    // make a std::map with VariantType objects
+    std::map<VariantType, string> map_objects;
+    map_objects["aary"] = "my favorite";
+    map_objects["aary"] = "what";
+    for (const auto& pair_objects : map_objects) {
+        cout << pair_objects.first << " : " << pair_objects.second << endl;
+    }
+
+    std::unordered_map<VariantType, string> hash_table_objects;
+    hash_table_objects["dogs"] = "my favorites";
+    for (const auto& pair_objects : hash_table_objects) {
+        cout << pair_objects.first << " : " << pair_objects.second << endl;
+    }
+}
+
 void run_tests() {
     test_not_equals_operator();
     test_less_than_operator();
     test_greater_than_operator();
     test_equals_operator();
+    test_inclusion_maps();
 }

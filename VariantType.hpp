@@ -103,7 +103,7 @@ public:
  */
 namespace std {
     template <> struct hash<VariantType> {
-        size_t operator() (const VariantType&);
+        size_t operator() (const VariantType&) const;
     };
 }
 

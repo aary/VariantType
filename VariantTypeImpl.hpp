@@ -108,7 +108,7 @@ private:
  */
 namespace std {
     template <> struct hash<VariantType::Impl> {
-        size_t operator() (const VariantType::Impl&);
+        size_t operator() (const VariantType::Impl&) const;
     };
 }
 
