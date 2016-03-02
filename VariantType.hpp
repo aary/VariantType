@@ -34,7 +34,6 @@ public:
     VariantType(double);
     VariantType(int);
     VariantType(bool);
-    VariantType& operator=(VariantType&& other);
 
     /*
      * Copying over a variant type is not allowed!  Moving one however is ok.
@@ -43,6 +42,7 @@ public:
      */
     VariantType(const VariantType&) = delete;
     VariantType(VariantType&&);
+    VariantType& operator=(VariantType&& other);
     
     /*
      * These functions should be used to compare a VariantType object with
