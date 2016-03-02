@@ -11,6 +11,7 @@ using std::endl;
 using std::cerr;
 #include <tuple>
 using std::tuple;
+#include <stdexcept>
 
 /*
  * UTILITY METHODS
@@ -18,30 +19,14 @@ using std::tuple;
 void VariantType::Impl::check_same_type(const VariantType::Impl& other, 
         const std::string& error_message) const {
     if (this->tag != other.tag) {
-        throw VariantTypeException(error_message);
+        throw std::logic_error(error_message);
     }
 }
 
 void VariantType::Impl::check_if_type_is(VariantType::Impl::Tag tag, 
         const std::string& error_message) const {
     if (this->tag != tag) {
-        throw VariantTypeException(error_message);
-    }
-}
-
-void VariantType::Impl::assert_variant_private(int line_number, 
-        bool condition_to_assert, const char* condition, 
-        const char* filename, const char* function) {
-
-    // If not condition then display condition and line number and throw
-    // exception
-    if (!condition_to_assert) {
-        throw VariantType::Impl::VariantTypeException(
-                string("ASSERTION FAILED on condition [") + 
-                string(condition) + string("] on line : [") + 
-                string(filename) + string(":") + 
-                std::to_string(line_number) + string("] in function : [") +
-                string(function) + string("()]\n"));
+        throw std::logic_error(error_message);
     }
 }
 

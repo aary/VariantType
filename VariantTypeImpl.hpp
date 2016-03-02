@@ -77,19 +77,6 @@ public:
         bool inner_boolean;
     };
 
-    /*
-     * The standard exception type for this class.  Inherits from
-     * std::exception to be safe. 
-     */
-    class VariantTypeException : public std::logic_error {
-        using std::logic_error::logic_error;
-    };
-
-    /*
-     * Private function to the library
-     */
-    static void assert_variant_private(int line_number, bool condition_to_assert, 
-            const char* condition, const char* filename, const char* function);
 private:
     /*
      * Some utility methods for the class, these check for exceptional
@@ -116,15 +103,3 @@ namespace std {
  * Print the implementation to an output stream
  */
 std::ostream& operator<<(std::ostream& os, const VariantType::Impl& impl);
-
-/*
- * An assert for this library that throws exceptions
- */
-#ifdef NDEBUG
-#define assert_variant(condition)
-#else
-#define assert_variant(condition) \
-    VariantType::Impl::assert_variant_private(__LINE__, condition, \
-        #condition, __FILE__, __FUNCTION__);
-#endif
-

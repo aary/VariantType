@@ -17,6 +17,39 @@ using std::unordered_map;
 #include <map>
 using std::map;
 
+/*
+ * An assert for this library that throws exceptions
+ */
+#ifdef NDEBUG
+#define assert_variant(condition)
+#else
+#define assert_variant(condition) \
+    assert_variant_private(__LINE__, condition, #condition, __FILE__, \
+            __FUNCTION__);
+#endif
+
+/*
+ * Private function to the library, this should not be used directly
+ */
+void assert_variant_private(int line_number, bool condition_to_assert, 
+        const char* condition, const char* filename, const char* function);
+
+void assert_variant_private(int line_number, 
+        bool condition_to_assert, const char* condition, 
+        const char* filename, const char* function) {
+
+    // If not condition then display condition and line number and throw
+    // exception
+    if (!condition_to_assert) {
+        throw std::logic_error(
+                string("ASSERTION FAILED on condition [") + 
+                string(condition) + string("] on line : [") + 
+                string(filename) + string(":") + 
+                std::to_string(line_number) + string("] in function : [") +
+                string(function) + string("()]\n"));
+    }
+}
+
 void test_not_equals_operator() {
 
     VariantType obj1 {true};
