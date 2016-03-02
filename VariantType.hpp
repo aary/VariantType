@@ -74,18 +74,14 @@ public:
     friend struct std::hash;
     friend std::ostream& operator<<(std::ostream& os, 
             const VariantType& variant_type);
+    friend std::ostream& operator<<(std::ostream& os,
+            const VariantType::Impl& impl);
+    friend class Impl;
 
     /*
      * The implementation of this variant type
      */
     class Impl;
-
-    /*
-     * make friends!
-     */
-    friend std::ostream& operator<<(std::ostream& os,
-            const VariantType::Impl& impl);
-    friend class Impl;
 
     /*
      * The opaque pointer idiom.  We do not want you to see how this class is
