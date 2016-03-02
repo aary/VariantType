@@ -58,7 +58,7 @@ void test_not_equals_operator() {
     VariantType obj3 {"aary"};
     VariantType obj4 {"aary"};
     assert_variant(obj3 == obj4);
-    assert_variant(obj3 == "aary");
+    assert_variant(obj3 != "aary");
     assert_variant(obj1 == true);
 }
 

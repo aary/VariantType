@@ -17,6 +17,9 @@ unit_test: unit_test.cpp
 main: test.cpp
 	$(COMPILER) $(FLAGS) -c test.cpp
 
+debug: FLAGS += -g3 -DDEBUG
+debug: test
+
 clean: 
 	rm -f *.o
 	rm -f test_exec

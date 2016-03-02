@@ -67,6 +67,19 @@ public:
     explicit operator int() const;
     explicit operator bool() const;
 
+
+    /******** OPAQUE POINTER IDIOM *********/
+    class Impl;
+
+    /*
+     * The opaque pointer idiom.  We do not want you to see how this class is
+     * implemented!  Something to think about though - everything in python is
+     * an Object, how do you think that works? 
+     */
+    std::unique_ptr<Impl> implementation;
+    /******** OPAQUE POINTER IDIOM *********/
+
+
     /*
      * Make friends!
      */
@@ -77,18 +90,6 @@ public:
     friend std::ostream& operator<<(std::ostream& os,
             const VariantType::Impl& impl);
     friend class Impl;
-
-    /*
-     * The implementation of this variant type
-     */
-    class Impl;
-
-    /*
-     * The opaque pointer idiom.  We do not want you to see how this class is
-     * implemented!  Something to think about though - everything in python is
-     * an Object, how do you think that works? 
-     */
-    std::unique_ptr<Impl> implementation;
 };
 
 

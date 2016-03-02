@@ -12,7 +12,7 @@ int main() {
         run_tests();
     } catch(std::exception& exc) {
         cerr << exc.what();
-        return 1;
+        throw exc;
     }
 
     return 0;
