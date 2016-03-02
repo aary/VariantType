@@ -27,16 +27,6 @@ void test_equals_operator();
 void test_copy_constructor();
 
 int main() {
-    VariantType::Impl obj1{"eecs281"};
-    VariantType::Impl obj2{"eecs482"};
-
-    set<VariantType::Impl> set_of_impls;
-    set_of_impls.insert(std::move(obj1));
-    set_of_impls.insert(std::move(obj2));
-
-    for (const auto& ele : set_of_impls) {
-        cout << ele << endl;
-    }
 
     VariantType obj3{"eecs281"};
     VariantType obj4{"eecs482"};

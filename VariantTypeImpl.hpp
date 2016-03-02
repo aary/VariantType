@@ -85,6 +85,11 @@ public:
         using std::logic_error::logic_error;
     };
 
+    /*
+     * Private function to the library
+     */
+    static void assert_variant_private(int line_number, bool condition_to_assert, 
+            const char* condition, const char* filename, const char* function);
 private:
     /*
      * Some utility methods for the class, these check for exceptional
@@ -93,6 +98,7 @@ private:
     void check_same_type(const Impl& other, 
             const std::string& error_message) const;
     void check_if_type_is(Tag tag, const std::string& message) const;
+
 };
 
 /* 
@@ -118,8 +124,7 @@ std::ostream& operator<<(std::ostream& os, const VariantType::Impl& impl);
 #define assert_variant(condition)
 #else
 #define assert_variant(condition) \
-    assert_variant_private(__LINE__, condition, #condition, __FILE__, __FUNCTION__);
+    VariantType::Impl::assert_variant_private(__LINE__, condition, \
+        #condition, __FILE__, __FUNCTION__);
 #endif
 
-extern void assert_variant_private(int line_number, bool condition_to_assert, 
-        const char* condition, const char* filename, const char* function);

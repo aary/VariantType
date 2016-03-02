@@ -75,15 +75,11 @@ public:
     friend std::ostream& operator<<(std::ostream& os, 
             const VariantType& variant_type);
 
-#ifdef DEBUG
-#else
-private:
-#endif
-
     /*
      * The implementation of this variant type
      */
     class Impl;
+    friend class Impl;
 
     /*
      * operator to cout

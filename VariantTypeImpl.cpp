@@ -29,8 +29,9 @@ void VariantType::Impl::check_if_type_is(VariantType::Impl::Tag tag,
     }
 }
 
-void assert_variant_private(int line_number, bool condition_to_assert, 
-        const char* condition, const char* filename, const char* function) {
+void VariantType::Impl::assert_variant_private(int line_number, 
+        bool condition_to_assert, const char* condition, 
+        const char* filename, const char* function) {
 
     // If not condition then display condition and line number and throw
     // exception
