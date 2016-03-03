@@ -3,7 +3,8 @@ FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3
 
 test: VariantTypeImpl VariantType unit_test main
 	$(COMPILER) $(FLAGS) VariantTypeImpl.o VariantType.o test.o unit_test.o -o test_exec
-	./test_exec
+	@echo "Running tests..."
+	@./test_exec
 
 VariantTypeImpl: VariantTypeImpl.cpp
 	$(COMPILER) $(FLAGS) -c VariantTypeImpl.cpp

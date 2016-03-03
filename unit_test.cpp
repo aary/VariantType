@@ -21,9 +21,9 @@ using std::map;
  * An assert for this library that throws exceptions
  */
 #ifdef NDEBUG
-#define assert_variant(condition)
+#define ASSERT_VARIANT(condition)
 #else
-#define assert_variant(condition) \
+#define ASSERT_VARIANT(condition) \
     assert_variant_private(__LINE__, condition, #condition, __FILE__, \
             __FUNCTION__);
 #endif
@@ -57,37 +57,37 @@ void test_not_equals_operator() {
 
     VariantType obj3 {"aary"};
     VariantType obj4 {"aary"};
-    assert_variant(obj3 == obj4);
-    assert_variant(obj3 != "aary");
-    assert_variant(obj1 == true);
+    ASSERT_VARIANT(obj3 == obj4);
+    ASSERT_VARIANT(obj3 == "aary");
+    ASSERT_VARIANT(obj1 == true);
 }
 
 void test_less_than_operator() {
     VariantType obj1 {1};
     VariantType obj2 {2};
-    assert_variant(obj1 < obj2);
+    ASSERT_VARIANT(obj1 < obj2);
 
     obj1 = std::move(VariantType{2});
-    assert_variant(!(obj1 < obj2));
+    ASSERT_VARIANT(!(obj1 < obj2));
 }
 
 void test_greater_than_operator() {
     VariantType obj1 {1};
     VariantType obj2 {2};
-    assert_variant(obj2 > obj1);
+    ASSERT_VARIANT(obj2 > obj1);
 
     obj1 = std::move(VariantType{2});
-    assert_variant(!(obj1 > obj2));
+    ASSERT_VARIANT(!(obj1 > obj2));
 }
 
 void test_equals_operator() {
     VariantType obj1 {1};
     VariantType obj2 {1};
-    assert_variant(obj1 == obj2);
+    ASSERT_VARIANT(obj1 == obj2);
 
     VariantType other_type{"what?"};
     try {
-        assert_variant(obj1 == other_type);
+        ASSERT_VARIANT(obj1 == other_type);
     } catch(std::exception& exc) {
     } catch(...) {
         throw std::logic_error("Comparing objects of different types did not "
@@ -126,4 +126,6 @@ void run_tests() {
     test_greater_than_operator();
     test_equals_operator();
     test_inclusion_maps();
+
+    cout << "All tests passed" << endl;
 }
