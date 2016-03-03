@@ -1,13 +1,14 @@
-#include <set>
-using std::set;
 #include "VariantType.hpp"
 #include "VariantTypeImpl.hpp"
-#include <string>
-using std::string;
 #include <iostream>
 using std::cout;
 using std::endl;
 using std::cerr;
+#include <string>
+using std::string;
+#include <sstream>
+#include <vector>
+using std::vector;
 #include <cassert>
 #include <stdexcept>
 using std::exception;
@@ -16,6 +17,8 @@ using std::logic_error;
 using std::unordered_map;
 #include <map>
 using std::map;
+#include <set>
+using std::set;
 
 /*
  * An assert for this library that throws exceptions
@@ -27,6 +30,17 @@ using std::map;
     assert_variant_private(__LINE__, condition, #condition, __FILE__, \
             __FUNCTION__);
 #endif
+
+
+// A string stream for in test debugging output.  Define the macro
+// TEST_DEBUG_OUTPUT to print all data sent to this to standard out as well
+std::ostringstream oss;
+#ifdef TEST_DEBUG_OUTPUT
+std::ostream& test_output_stream = cout;
+#else 
+std::ostream& test_output_stream = oss;
+#endif
+
 
 /*
  * Private function to the library, this should not be used directly
@@ -102,7 +116,7 @@ void test_inclusion_maps() {
     set_objects.emplace("dog");
     set_objects.emplace("cat");
     for (const auto& obj : set_objects) {
-        cout << obj << endl;
+        test_output_stream << obj << endl;
     }
 
     // make a std::map with VariantType objects
@@ -110,22 +124,38 @@ void test_inclusion_maps() {
     map_objects["aary"] = "my favorite";
     map_objects["aary"] = "what";
     for (const auto& pair_objects : map_objects) {
-        cout << pair_objects.first << " : " << pair_objects.second << endl;
+        test_output_stream << pair_objects.first << " : " 
+            << pair_objects.second << endl;
     }
 
     std::unordered_map<VariantType, string> hash_table_objects;
     hash_table_objects["dogs"] = "my favorites";
     for (const auto& pair_objects : hash_table_objects) {
-        cout << pair_objects.first << " : " << pair_objects.second << endl;
+        test_output_stream << pair_objects.first << " : " 
+            << pair_objects.second << endl;
     }
 }
 
 void run_tests() {
-    test_not_equals_operator();
-    test_less_than_operator();
-    test_greater_than_operator();
-    test_equals_operator();
-    test_inclusion_maps();
+
+    cout << "Running tests..." << endl;
+
+    // the vector of tests
+    vector<decltype(&test_not_equals_operator)> test_functions {
+        &test_not_equals_operator, 
+        &test_less_than_operator,
+        &test_greater_than_operator,
+        &test_equals_operator,
+        &test_inclusion_maps
+    };
+
+    // run all the tests
+    for (decltype(test_functions.size()) i = 0; i < test_functions.size(); ++i) {
+        test_functions[i]();
+        auto percent_done = static_cast<double>(i) / 
+            static_cast<double>(test_functions.size());
+        cout << percent_done * 100 << "% tests completed" << endl;
+    }
 
     cout << "All tests passed" << endl;
 }
