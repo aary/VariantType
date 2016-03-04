@@ -19,6 +19,7 @@ using std::unordered_map;
 using std::map;
 #include <set>
 using std::set;
+#include <functional>
 
 /*
  * An assert for this library that throws exceptions
@@ -45,10 +46,10 @@ std::ostream& test_output_stream = oss;
 /*
  * Private function to the library, this should not be used directly
  */
-void assert_variant_private(int line_number, bool condition_to_assert, 
+static void assert_variant_private(int line_number, bool condition_to_assert, 
         const char* condition, const char* filename, const char* function);
 
-void assert_variant_private(int line_number, 
+static void assert_variant_private(int line_number, 
         bool condition_to_assert, const char* condition, 
         const char* filename, const char* function) {
 
@@ -64,7 +65,7 @@ void assert_variant_private(int line_number,
     }
 }
 
-void test_not_equals_operator() {
+static void test_not_equals_operator() {
 
     VariantType obj1 {true};
     VariantType obj2 {false};
@@ -76,7 +77,7 @@ void test_not_equals_operator() {
     ASSERT_VARIANT(obj1 == true);
 }
 
-void test_less_than_operator() {
+static void test_less_than_operator() {
     VariantType obj1 {1};
     VariantType obj2 {2};
     ASSERT_VARIANT(obj1 < obj2);
@@ -85,7 +86,7 @@ void test_less_than_operator() {
     ASSERT_VARIANT(!(obj1 < obj2));
 }
 
-void test_greater_than_operator() {
+static void test_greater_than_operator() {
     VariantType obj1 {1};
     VariantType obj2 {2};
     ASSERT_VARIANT(obj2 > obj1);
@@ -94,7 +95,7 @@ void test_greater_than_operator() {
     ASSERT_VARIANT(!(obj1 > obj2));
 }
 
-void test_equals_operator() {
+static void test_equals_operator() {
     VariantType obj1 {1};
     VariantType obj2 {1};
     ASSERT_VARIANT(obj1 == obj2);
@@ -109,7 +110,7 @@ void test_equals_operator() {
     }
 }
 
-void test_inclusion_maps() {
+static void test_inclusion_maps() {
 
     // make a std::set with VariantType objects
     std::set<VariantType> set_objects;
@@ -136,12 +137,12 @@ void test_inclusion_maps() {
     }
 }
 
-void run_tests() {
+auto run_tests() {
 
     cout << "Running tests..." << endl;
 
     // the vector of tests
-    vector<decltype(&test_not_equals_operator)> test_functions {
+    vector<std::function<void ()>> test_functions {
         &test_not_equals_operator, 
         &test_less_than_operator,
         &test_greater_than_operator,
@@ -151,6 +152,7 @@ void run_tests() {
 
     // run all the tests
     for (decltype(test_functions.size()) i = 0; i < test_functions.size(); ++i) {
+
         test_functions[i]();
         auto percent_done = static_cast<double>(i) / 
             static_cast<double>(test_functions.size());
