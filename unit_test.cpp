@@ -1,25 +1,30 @@
 #include "VariantType.hpp"
 #include "VariantTypeImpl.hpp"
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <cassert>
+#include <stdexcept>
+#include <unordered_map>
+#include <map>
+#include <set>
+#include <functional>
+#include <dlfcn.h>
+#include <cstdint>
+#include <cassert>
+#include <limits>
+#include <algorithm>
 using std::cout;
 using std::endl;
 using std::cerr;
-#include <string>
 using std::string;
-#include <sstream>
-#include <vector>
 using std::vector;
-#include <cassert>
-#include <stdexcept>
 using std::exception;
 using std::logic_error;
-#include <unordered_map>
 using std::unordered_map;
-#include <map>
 using std::map;
-#include <set>
 using std::set;
-#include <functional>
 
 /*
  * An assert for this library that throws exceptions
@@ -41,7 +46,6 @@ std::ostream& test_output_stream = cout;
 #else 
 std::ostream& test_output_stream = oss;
 #endif
-
 
 /*
  * Private function to the library, this should not be used directly
