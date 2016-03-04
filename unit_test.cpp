@@ -46,9 +46,6 @@ std::ostream& test_output_stream = oss;
 /*
  * Private function to the library, this should not be used directly
  */
-static void assert_variant_private(int line_number, bool condition_to_assert, 
-        const char* condition, const char* filename, const char* function);
-
 static void assert_variant_private(int line_number, 
         bool condition_to_assert, const char* condition, 
         const char* filename, const char* function) {
