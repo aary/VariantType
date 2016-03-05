@@ -148,7 +148,7 @@ auto run_tests() {
         &test_less_than_operator,
         &test_greater_than_operator,
         &test_equals_operator
-        // &test_inclusion_maps
+        &test_inclusion_maps
     };
 
     // run all the tests
