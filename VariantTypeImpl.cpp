@@ -5,13 +5,13 @@
 #include <cassert>
 #include <functional>
 #include <iostream>
+#include <tuple>
+#include <stdexcept>
 using std::string;
 using std::cout;
 using std::endl;
 using std::cerr;
-#include <tuple>
 using std::tuple;
-#include <stdexcept>
 
 /*
  * UTILITY METHODS
