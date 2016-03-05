@@ -55,6 +55,7 @@ static auto switch_return_type_with(Func function, const Vs&... vs) {
 
     // The compile time magic below
     switch (std::get<0>(tuple_of_values).tag) {
+
         case (VariantType::Impl::Tag::STRING): {
             return function(vs.inner_string...);
             break;
