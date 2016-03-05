@@ -15,17 +15,36 @@ using std::cout;
 using std::endl;
 using std::ostringstream;
 
-#ifdef DEBUG
-__attribute__((unused)) static ostream& memory_output_stream {cout};
-#else 
-__attribute__((unused)) static ostringstream oss;
-__attribute__((unused)) static ostream& memory_output_stream {oss};
-#endif
+template <typename Lock>
+class RAIILock {
+public:
+    RAIILock() {}
+    RAIILock(Lock& lock_in) {
+        has_lock = true;
+        lock = &lock_in;
+        lock->lock();
+    }
+    ~RAIILock() {
+        if (has_lock)
+            lock->unlock();
+    }
+
+    Lock* lock {nullptr};
+    bool has_lock {false};
+};
+
+// #ifdef DEBUG
+// __attribute__((unused)) static ostream& memory_output_stream {cout};
+// #else 
+// __attribute__((unused)) static ostringstream oss;
+// __attribute__((unused)) static ostream& memory_output_stream {oss};
+// #endif
 
 // Overloads for the standard library memory functions
 extern "C" {
     void* malloc(size_t size);
-    void* calloc(size_t count, size_t size);
+    // void* calloc(size_t count, size_t size);
+    // void* realloc(void* ptr, size_t size);
     void free(void* ptr);
 }
 void* operator new(size_t count); 
@@ -38,7 +57,7 @@ void operator delete[](void* ptr) _NOEXCEPT;
 static std::mutex memory_lock;
 static std::mutex atomic_making_lock; // to make the checking and locking atomic
 static bool in_user_defined_function {false};
-static unique_lock<mutex> atomically_check_and_acquire_memory_lock();
+static RAIILock<mutex> atomically_check_and_acquire_memory_lock();
 
 // Bookkeeping for the memory usage
 int max_heap_usage {0};
@@ -60,32 +79,34 @@ void* malloc(size_t size) {
 
         // Get the pointer from malloc
         void* pointer = original_malloc(size);
-        uintptr_t pointer_handle = reinterpret_cast<uintptr_t>(pointer);
 
-        execute_bookkeeping_code([&]() {
-            // assert that the pointer does not already exist in the memory map
-            assert("memory should not exist in memory map before allocation" && 
-                    get_memory_map().find(pointer_handle) == 
-                    get_memory_map().end());
-            
-            // add to bookkeeping
-            get_memory_map()[pointer_handle] = size;
-            track_max_usage();
-        });
+        // execute_bookkeeping_code([&]() {
+        //     // assert that the pointer does not already exist in the memory map
+        //     uintptr_t pointer_handle = reinterpret_cast<uintptr_t>(pointer);
+        //     assert("memory should not exist in memory map before allocation" && 
+        //             get_memory_map().find(pointer_handle) == 
+        //             get_memory_map().end());
+        //     
+        //     // add to bookkeeping
+        //     get_memory_map()[pointer_handle] = size;
+        //     track_max_usage();
+        // });
 
         // memory_output_stream << "Malloc returned " << pointer << endl;
+        cout << "malloc returned " << pointer << endl;
         return pointer;
     }
 }
 
-void* calloc(size_t count, size_t size) {
-    // memory_output_stream << "calloc called with size " << size << endl;
-    return ::malloc(count * size);
-}
+//void* calloc(size_t count, size_t size) {
+//    // memory_output_stream << "calloc called with size " << size << endl;
+//    return ::malloc(count * size);
+//}
 
 void free(void* ptr) {
 
     // memory_output_stream << "free called with pointer " << ptr << endl;
+    if (!ptr) return;
 
     // lock
     { auto raii_lock = atomically_check_and_acquire_memory_lock();
@@ -93,27 +114,50 @@ void free(void* ptr) {
         // get the original free function
         static auto original_free = (decltype(&free)) dlsym(RTLD_NEXT, "free");
 
-        uintptr_t pointer_handle = reinterpret_cast<uintptr_t>(ptr);
+        //execute_bookkeeping_code([&] () {
+        //    // assert that the heap memory map already has the pointer
+        //    uintptr_t pointer_handle = reinterpret_cast<uintptr_t>(ptr);
+        //    assert("memory to be freed does not exist in the heap memory map" && 
+        //                get_memory_map().find(pointer_handle) != 
+        //                get_memory_map().end());
 
-        execute_bookkeeping_code([&] () {
-            // assert that the heap memory map already has the pointer
-            assert("memory to be freed does not exist in the heap memory map" && 
-                        get_memory_map().find(pointer_handle) != 
-                        get_memory_map().end());
-
-            // add to bookkeeping
-            get_memory_map().erase(pointer_handle);
-        });
+        //    // add to bookkeeping
+        //    get_memory_map().erase(pointer_handle);
+        //});
 
         // free the memory
         original_free(ptr);
     }
 }
 
+// void* realloc(void* ptr, size_t size) {
+//     if (!ptr) return nullptr;
+// 
+//     void* pointer;
+//     { auto raii_lock = atomically_check_and_acquire_memory_lock();
+// 
+//         // realloc the memory
+//         pointer = ::malloc(size);
+// 
+//         //execute_bookkeeping_code([&] () {
+//         //    uintptr_t prev_pointer_handle = reinterpret_cast<uintptr_t>(ptr);
+//         //    uintptr_t new_pointer_handle = reinterpret_cast<uintptr_t>(pointer);
+// 
+//         //    memcpy(pointer, ptr, get_memory_map()[prev_pointer_handle]);
+//         //    get_memory_map()[new_pointer_handle] = size;
+//         //});
+//             
+//     }
+// 
+//     free(ptr);
+//     return pointer;
+// }
+
 }
 
 void* operator new(size_t count) {
 
+    cout << "operator new called" << endl;
     // memory_output_stream << "operator new called with size " << count << endl;
     auto pointer = malloc(count);
     if (!pointer) {
@@ -125,19 +169,31 @@ void* operator new(size_t count) {
 
 void* operator new[](size_t count) {
     
+    cout << "operator new[] called" << endl;
     // memory_output_stream << "operator new[] called with size " << count << endl;
 
     return operator new(count);
 }
 
 void operator delete(void* ptr) _NOEXCEPT {
+    cout << "operator delete(1) called with pointer " << ptr << endl;
 
     // memory_output_stream << "operator delete called with ptr " << ptr << endl;
     free(ptr);
 }
 
 void operator delete[](void* ptr) _NOEXCEPT {
+    cout << "operator delete(1)[] called" << endl;
     // memory_output_stream << "operator delete[] called with ptr " << ptr << endl;
+    free(ptr);
+}
+
+void operator delete(void* ptr, __attribute__((unused)) size_t size) {
+    cout << "operator delete(2) called" << endl;
+    free(ptr);
+}
+void operator delete[](void* ptr, __attribute__((unused)) size_t size) {
+    cout << "operator delete[](2) called" << endl;
     free(ptr);
 }
 
@@ -146,7 +202,7 @@ void operator delete[](void* ptr) _NOEXCEPT {
  * the current memory map dictates that the memory usage is greater than what
  * it was before.
  */
-void track_max_usage() {
+__attribute__((unused)) void track_max_usage() {
 
     // loop through all keys and add up the values
     int sum {0};
@@ -157,14 +213,14 @@ void track_max_usage() {
 }
 
 
-unique_lock<mutex> atomically_check_and_acquire_memory_lock() {
+RAIILock<mutex> atomically_check_and_acquire_memory_lock() {
 
     // acquire lock
-    unique_lock<mutex> lck {atomic_making_lock};
+    RAIILock<mutex> lck {atomic_making_lock};
         
         return (in_user_defined_function) ?
-            unique_lock<mutex> {} :
-            unique_lock<mutex> {memory_lock};
+            RAIILock<mutex> {} :
+            RAIILock<mutex> {memory_lock};
 }
 
 template <typename Func>

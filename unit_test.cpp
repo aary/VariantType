@@ -40,10 +40,10 @@ using std::set;
 
 // A string stream for in test debugging output.  Define the macro
 // TEST_DEBUG_OUTPUT to print all data sent to this to standard out as well
-std::ostringstream oss;
 #ifdef TEST_DEBUG_OUTPUT
 std::ostream& test_output_stream = cout;
 #else 
+std::ostringstream oss;
 std::ostream& test_output_stream = oss;
 #endif
 
@@ -138,7 +138,6 @@ static void test_inclusion_maps() {
     }
 }
 
-extern int max_heap_usage;
 auto run_tests() {
 
     cout << "Running tests..." << endl;
@@ -148,8 +147,8 @@ auto run_tests() {
         &test_not_equals_operator, 
         &test_less_than_operator,
         &test_greater_than_operator,
-        &test_equals_operator,
-        &test_inclusion_maps
+        &test_equals_operator
+        // &test_inclusion_maps
     };
 
     // run all the tests
@@ -162,5 +161,4 @@ auto run_tests() {
     }
 
     cout << "All tests passed" << endl;
-    cout << "Maximum heap memory consumption " << max_heap_usage << endl;
 }
