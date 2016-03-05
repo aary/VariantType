@@ -1,8 +1,8 @@
 COMPILER = g++
 FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3 
 
-test: VariantTypeImpl VariantType unit_test main
-	$(COMPILER) $(FLAGS) VariantTypeImpl.o VariantType.o test.o unit_test.o -o test_exec
+test: VariantTypeImpl VariantType unit_test memory_track main 
+	$(COMPILER) $(FLAGS) VariantTypeImpl.o VariantType.o test.o unit_test.o memory_overrides.o -o test_exec
 	@./test_exec
 
 VariantTypeImpl: VariantTypeImpl.cpp
@@ -16,6 +16,9 @@ unit_test: unit_test.cpp
 
 main: test.cpp
 	$(COMPILER) $(FLAGS) -c test.cpp
+
+memory_track: memory_overrides.cpp
+	${COMPILER} ${FLAGS} -c memory_overrides.cpp
 
 debug: FLAGS += -g3 -DDEBUG
 debug: test

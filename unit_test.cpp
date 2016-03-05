@@ -138,6 +138,7 @@ static void test_inclusion_maps() {
     }
 }
 
+extern int max_heap_usage;
 auto run_tests() {
 
     cout << "Running tests..." << endl;
@@ -161,4 +162,5 @@ auto run_tests() {
     }
 
     cout << "All tests passed" << endl;
+    cout << "Maximum heap memory consumption " << max_heap_usage << endl;
 }
