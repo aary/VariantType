@@ -10,3 +10,4 @@ previous versions of C++ so this must be compiled with C++14.  The header
 implementations are in the other .cpp files.  To run the unit tests type in 
 ``make test``
 
+By Aaryaman Sagar (rmn100@gmail.com)
