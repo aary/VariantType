@@ -25,6 +25,8 @@ VariantType::VariantType(VariantType&& other) {
     this->implementation.swap(other.implementation);
 }
 
+VariantType::~VariantType() {}
+
 VariantType& VariantType::operator=(VariantType&& other) {
     this->implementation.swap(other.implementation);
     return *this;

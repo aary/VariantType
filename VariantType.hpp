@@ -34,6 +34,7 @@ public:
     VariantType(double);
     VariantType(int);
     VariantType(bool);
+    ~VariantType(); // Destructor to suppress error with unique_ptr and pimpl
 
     /*
      * Copying over a variant type is not allowed!  Moving one however is ok.
