@@ -1,5 +1,5 @@
 COMPILER = g++
-DIRECTORY_WITH_MAIN_HEADER = .
+DIRECTORY_WITH_MAIN_HEADER = ./include
 FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3 \
 		-I ${DIRECTORY_WITH_MAIN_HEADER}
 
