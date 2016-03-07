@@ -6,7 +6,7 @@ FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3 \
 test: VariantTypeImpl VariantType unit_test main 
 	ar rcs libvarianttype.a VariantTypeImpl.o VariantType.o 
 	@rm -f VariantTypeImpl.o VariantType.o
-	$(COMPILER) $(FLAGS) libvarianttype.a test.o unit_test.o -o test_exec
+	$(COMPILER) $(FLAGS) libvarianttype.a test_main.o unit_test.o -o test_exec
 	@rm -f *.o
 	@./test_exec
 
@@ -19,8 +19,8 @@ VariantType: src/VariantType.cpp
 unit_test: unit_test.cpp
 	$(COMPILER) $(FLAGS) -c unit_test.cpp
 
-main: test.cpp
-	$(COMPILER) $(FLAGS) -c test.cpp
+main: test_main.cpp
+	$(COMPILER) $(FLAGS) -c test_main.cpp
 
 memory_track: memory_overrides.cpp
 	${COMPILER} ${FLAGS} -c memory_overrides.cpp
