@@ -1,12 +1,13 @@
 COMPILER = g++
 DIRECTORY_WITH_MAIN_HEADER = ./include
-FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3 \
-		-I ${DIRECTORY_WITH_MAIN_HEADER}
+FLAGS = -std=c++14 -I ${DIRECTORY_WITH_MAIN_HEADER} \
+		-Wall -Werror -Wvla -Wextra -pedantic -O3 
+		
 
 test: VariantTypeImpl VariantType unit_test main 
-	ar rcs libvarianttype.a VariantTypeImpl.o VariantType.o 
+	ar rcs lib/libvarianttype.a VariantTypeImpl.o VariantType.o 
 	@rm -f VariantTypeImpl.o VariantType.o
-	$(COMPILER) $(FLAGS) libvarianttype.a test_main.o unit_test.o -o test_exec
+	$(COMPILER) $(FLAGS) lib/libvarianttype.a *.o -o test_exec
 	@rm -f *.o
 	@./test_exec
 
@@ -31,3 +32,4 @@ debug: test
 clean: 
 	rm -f *.o
 	rm -f test_exec
+	rm -f lib/libvarianttype.a
