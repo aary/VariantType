@@ -1,8 +1,11 @@
 COMPILER = g++
-FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3 
+DIRECTORY_WITH_MAIN_HEADER = .
+FLAGS = -std=c++14 -Wall -Werror -Wvla -Wextra -pedantic -O3 \
+		-I ${DIRECTORY_WITH_MAIN_HEADER}
 
 test: VariantTypeImpl VariantType unit_test main 
 	$(COMPILER) $(FLAGS) VariantTypeImpl.o VariantType.o test.o unit_test.o -o test_exec
+	@rm -f *.o
 	@./test_exec
 
 VariantTypeImpl: src/VariantTypeImpl.cpp
