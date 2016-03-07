@@ -5,11 +5,11 @@ test: VariantTypeImpl VariantType unit_test main
 	$(COMPILER) $(FLAGS) VariantTypeImpl.o VariantType.o test.o unit_test.o -o test_exec
 	@./test_exec
 
-VariantTypeImpl: VariantTypeImpl.cpp
-	$(COMPILER) $(FLAGS) -c VariantTypeImpl.cpp
+VariantTypeImpl: src/VariantTypeImpl.cpp
+	$(COMPILER) $(FLAGS) -c src/VariantTypeImpl.cpp
 
-VariantType: VariantType.cpp
-	$(COMPILER) $(FLAGS) -c VariantType.cpp
+VariantType: src/VariantType.cpp
+	$(COMPILER) $(FLAGS) -c src/VariantType.cpp
 
 unit_test: unit_test.cpp
 	$(COMPILER) $(FLAGS) -c unit_test.cpp
