@@ -1,5 +1,4 @@
 #include "VariantType.hpp"
-#include "VariantTypeImpl.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
