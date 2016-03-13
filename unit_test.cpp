@@ -137,7 +137,7 @@ static void test_inclusion_maps() {
     }
 }
 
-auto run_tests() {
+void run_tests() {
 
     cout << "Running tests..." << endl;
 
