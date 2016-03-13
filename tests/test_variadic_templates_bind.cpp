@@ -38,8 +38,8 @@ int main() {
     TestClass test1;
     TestClass test2;
     my_function(my_lambda, std::ref(test1), std::ref(test2));
-    auto bound_function = std::bind(my_lambda, std::ref(test1), std::ref(test2));
-    bound_function();
+    // auto bound_function = std::bind(my_lambda, std::ref(test1), std::ref(test2));
+    // bound_function();
 
     return 0;
 }
