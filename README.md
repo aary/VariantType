@@ -8,6 +8,6 @@ This project relies on several features of C++14 that are incompatible with
 previous versions of C++ so this must be compiled with C++14.  The header
 `VariantType.hpp` contains all the relevant function declarations and the
 implementations are in the other .cpp files in the /src directory.  To run the
-unit tests type in ``make test``
+unit tests type in ``make test``. 
 
-By Aaryaman Sagar (rmn100@gmail.com)
+By Aaryaman Sagar (rmn100@gmail.com) 
