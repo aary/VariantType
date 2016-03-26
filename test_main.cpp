@@ -1,6 +1,6 @@
 #include <iostream>
-using std::cerr;
 #include <stdexcept>
+using std::cerr;
 using std::exception;
 
 // run all unit tests

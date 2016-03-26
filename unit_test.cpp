@@ -82,7 +82,7 @@ static void test_less_than_operator() {
     VariantType obj2 {2};
     ASSERT_VARIANT(obj1 < obj2);
 
-    obj1 = std::move(VariantType{2});
+    obj1 = VariantType{2};
     ASSERT_VARIANT(!(obj1 < obj2));
 }
 
@@ -91,7 +91,7 @@ static void test_greater_than_operator() {
     VariantType obj2 {2};
     ASSERT_VARIANT(obj2 > obj1);
 
-    obj1 = std::move(VariantType{2});
+    obj1 = VariantType{2};
     ASSERT_VARIANT(!(obj1 > obj2));
 }
 
