@@ -133,9 +133,9 @@ struct apply_functor_conditionally_to_appropriate_type {
         // corresponding to an double, and then 0 which corresponds to the
         // base case and is an int
         if (variant.current_type_index == which_type) {
-            using TypeStored = typename VariantType::template GetType<which_type>::type;
+            using TypeStored = 
+                typename VariantType::template GetType<which_type>::type;
             function(*reinterpret_cast<const TypeStored*>(&variant.buffer));
-            // (*reinterpret_cast<const TypeStored*>(&variant.buffer)).~TypeStored();
         }
         else {
             return apply_functor_conditionally_to_appropriate_type<which_type - 1>
@@ -154,7 +154,6 @@ struct apply_functor_conditionally_to_appropriate_type<0> {
         assert(variant.current_type_index == 0);
         using TypeStored = typename VariantType::template GetType<0>::type;
         function(*reinterpret_cast<const TypeStored*>(&variant.buffer));
-        // (*reinterpret_cast<const TypeStored*>(&variant.buffer)).~TypeStored();
     }
 };
 
