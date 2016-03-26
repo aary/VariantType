@@ -13,8 +13,8 @@ int main() {
 
     VariadicTemplatedType<int, string> temp {string{"hello"}};
     temp.apply_visitor([](const auto& var) { cout << var << endl; });
-    cout << "index of the type type of temp is " << temp.current_type_index 
-        << endl;
+    // cout << "index of the type type of temp is " << temp.current_type_index 
+    //     << endl;
 
     return 0;
 }

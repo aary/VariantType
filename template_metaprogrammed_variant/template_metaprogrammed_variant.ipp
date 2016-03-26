@@ -1,12 +1,15 @@
+#include <cstring>
 #include <string> 
 #include <cassert>
 #include <new>
 #include <iostream>
 #include <tuple>
 #include <type_traits>
+#include "template_metaprogrammed_variant.hpp"
 using std::cout;
 using std::endl;
 using std::string;
+
 
 // Uses the placement new operator which does not create an object on the heap
 // but just constructs it in place in the memory address specified, so this
@@ -27,6 +30,11 @@ VariadicTemplatedType<Vs...>::VariadicTemplatedType(const Type& element) {
 }
 
 template <typename... Vs>
+VariadicTemplatedType<Vs...>::VariadicTemplatedType(
+        __attribute__((unused)) const VariadicTemplatedType& other) {
+}
+
+template <typename... Vs>
 template <int which_type>
 struct VariadicTemplatedType<Vs...>::GetType {
     
@@ -35,17 +43,18 @@ struct VariadicTemplatedType<Vs...>::GetType {
     using type = typename std::tuple_element<which_type, std::tuple<Vs...>>::type;
 };
 
-
-// templated destructor impl struct that helps in doing compile time recursion
-// based on the input type, check out the comment in the destroy function
-// below
+// templated function for general purpose functions that need to check the
+// type of the object and then perform things differently based on what the
+// type is.  Look at the commenting in the apply function to see how this
+// works.
 template <int which_type>
 struct apply_functor_conditionally_to_appropriate_type {
 
     // declare a templated destroy function that takes in a variant type, this
     // is independent of the variant type class
-    template <typename VariantType, typename Function>
-    static void apply(const VariantType& variant, Function function) {
+    template <typename Function, typename Variant, typename... Others>
+    static void apply(Function function, Variant& variant, 
+            Others&... others) {
 
         // simulate switch(variant.current_type_index) using compile time
         // recursion, first initiate the check here and then do the check on
@@ -54,29 +63,37 @@ struct apply_functor_conditionally_to_appropriate_type {
         // current_type_index is equal to 2 corresponding to the string and
         // then check the whether the current_type_index is equal to 1
         // corresponding to an double, and then 0 which corresponds to the
-        // base case and is an int
+        // base case and is an int. 
+        //
+        // Currently no static asserts are done on the type of the other
+        // parameters.  TODO I will add this later.
         if (variant.current_type_index == which_type) {
             using TypeStored = 
-                typename VariantType::template GetType<which_type>::type;
-            function(*reinterpret_cast<const TypeStored*>(&variant.buffer));
+                typename Variant::template GetType<which_type>::type;
+            function(variant.template cast_and_return_data<TypeStored>(),
+                    others.template cast_and_return_data<TypeStored>()...);
         }
+
+        // compile time tail recursion?
         else {
             return apply_functor_conditionally_to_appropriate_type<which_type - 1>
-                ::apply(variant, function);
+                ::apply(function, variant, others...);
         }
     }
 };
 template <>
 struct apply_functor_conditionally_to_appropriate_type<0> {
 
-    // The ufnction for the base case
-    template <typename VariantType, typename Function>
-    static void apply(const VariantType& variant, Function function) {
+    // The function for the base case
+    template <typename Function, typename Variant, typename... Others>
+    static void apply(Function function, Variant& variant, 
+            Others&... others) {
 
         // assert since there is no lower index possible
         assert(variant.current_type_index == 0);
-        using TypeStored = typename VariantType::template GetType<0>::type;
-        function(*reinterpret_cast<const TypeStored*>(&variant.buffer));
+        using TypeStored = typename Variant::template GetType<0>::type;
+        function(variant.template cast_and_return_data<TypeStored>(),
+                others.template cast_and_return_data<TypeStored>()...);
     }
 };
 
@@ -90,7 +107,7 @@ VariadicTemplatedType<Vs...>::~VariadicTemplatedType() {
     // at the apply_functor_conditionally_to_appropriate_type non base case
     // class.  If that also does not make sense then try harder.
     apply_functor_conditionally_to_appropriate_type<sizeof...(Vs) - 1>::
-        apply(*this, [](const auto& appropriate_type_var) {
+        apply([](const auto& appropriate_type_var) {
 
             // get the right type from the input parameter without the const
             // and the ref
@@ -100,27 +117,21 @@ VariadicTemplatedType<Vs...>::~VariadicTemplatedType() {
 
             // call the destructor
             appropriate_type_var.~TypeWithConstRefRemoved();
-        });
-
-    // destructor_impl<sizeof...(Vs) - 1>::destroy(*this);
+        }, *this);
 }
 
 template <typename... Vs>
-template <int which_type>
-auto VariadicTemplatedType<Vs...>::get() const {
-
-    // get the type stored in the object using the GetType function
-    using TypeStored = 
-        typename VariadicTemplatedType::template GetType<which_type>::type;
-    return *reinterpret_cast<const TypeStored*>(&buffer);
+template <typename Type>
+Type& VariadicTemplatedType<Vs...>::cast_and_return_data() {
+    return *reinterpret_cast<Type*>(&buffer);
 }
-
 
 template <typename... Vs>
 template <typename Visitor>
-auto VariadicTemplatedType<Vs...>::apply_visitor(Visitor visitor) {
-    return apply_functor_conditionally_to_appropriate_type<sizeof...(Vs) - 1>
-        ::apply(*this, visitor);
-}
+void VariadicTemplatedType<Vs...>::apply_visitor(Visitor visitor) {
 
+    // call a helper from the helper class
+    apply_functor_conditionally_to_appropriate_type<sizeof...(Vs) - 1>
+        ::apply(visitor, *this);
+}
 
