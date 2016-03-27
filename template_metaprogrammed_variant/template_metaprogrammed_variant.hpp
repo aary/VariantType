@@ -75,7 +75,13 @@ private:
     /* 
      * the index in the template pack having the current type of the element
      */
+#ifdef DEBUG
+public:
     int current_type_index;
+private:
+#else
+    int current_type_index;
+#endif
 
     /* 
      * gets the type in the index specified at the given index, use the public
