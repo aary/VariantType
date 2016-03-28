@@ -49,6 +49,13 @@ template <typename ToCheck, typename... Vs>
 struct IsTypeContainedIn<ToCheck, ToCheck, Vs...> : 
     public std::integral_constant<bool, true>
 {};
+
+// removes const and refs
+template <typename TypeWithConstRefs>
+struct RemoveConstRef {
+    using type = typename std::remove_reference<
+        std::remove_const_t<TypeWithConstRefs>>::type;
+};
 /* ******** Utilities ********* */
 
 
@@ -122,7 +129,7 @@ struct apply_functor_conditionally_to_appropriate_type {
     // declare a templated destroy function that takes in a variant type, this
     // is independent of the variant type class
     template <typename VariantType, typename Function>
-    static void apply(const VariantType& variant, Function function) {
+    static void apply(VariantType& variant, Function function) {
 
         // simulate switch(variant.current_type_index) using compile time
         // recursion, first initiate the check here and then do the check on
@@ -135,7 +142,7 @@ struct apply_functor_conditionally_to_appropriate_type {
         if (variant.current_type_index == which_type) {
             using TypeStored = 
                 typename VariantType::template GetType<which_type>::type;
-            function(*reinterpret_cast<const TypeStored*>(&variant.buffer));
+            function(*reinterpret_cast<TypeStored*>(&variant.buffer));
         }
         else {
             return apply_functor_conditionally_to_appropriate_type<which_type - 1>
@@ -148,12 +155,12 @@ struct apply_functor_conditionally_to_appropriate_type<0> {
 
     // The ufnction for the base case
     template <typename VariantType, typename Function>
-    static void apply(const VariantType& variant, Function function) {
+    static void apply(VariantType& variant, Function function) {
 
         // assert since there is no lower index possible
         assert(variant.current_type_index == 0);
         using TypeStored = typename VariantType::template GetType<0>::type;
-        function(*reinterpret_cast<const TypeStored*>(&variant.buffer));
+        function(*reinterpret_cast<TypeStored*>(&variant.buffer));
     }
 };
 
@@ -204,8 +211,6 @@ int main() {
 
     VariadicTemplatedType<int, string> temp {string{"hello"}};
     temp.apply_visitor([](const auto& var) { cout << var << endl; });
-    cout << "index of the type type of temp is " << temp.current_type_index 
-        << endl;
 
     return 0;
 }

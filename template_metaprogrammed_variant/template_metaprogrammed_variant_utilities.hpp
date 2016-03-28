@@ -51,4 +51,17 @@ template <typename ToCheck, typename... Vs>
 struct IsTypeContainedIn<ToCheck, ToCheck, Vs...> : 
     public std::integral_constant<bool, true>
 {};
+
+// get the type for the specified index in the parameter pack
+template <int current_index, typename... Vs>
+struct TypeForIndex {};
+template <typename Head, typename... Tail>
+struct TypeForIndex<0, Head, Tail...> {
+  using type = Head;
+};
+template <int current_index, typename Head, typename... Tail>
+struct TypeForIndex<current_index, Head, Tail...>:
+  TypeForIndex<current_index-1, Tail...>
+{};
+
 /* ******** Utilities ********* */
