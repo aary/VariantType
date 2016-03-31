@@ -66,7 +66,9 @@ public:
 public:
     /*
      * The data that is going to be used as the buffer for this variant type,
-     * i.e. any type included in the Vs... parameter pack can fit here
+     * i.e. any type included in the Vs... parameter pack can fit here.  This
+     * will be the same size as a union that would contain variables of all
+     * the types listed in the parameter pack
      */
     static const size_t data_size = static_max<sizeof(Vs)...>::value;
     typename std::aligned_union<data_size, Vs...>::type buffer;
