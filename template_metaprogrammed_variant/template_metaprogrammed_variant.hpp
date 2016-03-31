@@ -63,14 +63,13 @@ public:
     template<typename Visitor>
     void apply_visitor(Visitor visitor);
 
-private:
+public:
     /*
      * The data that is going to be used as the buffer for this variant type,
      * i.e. any type included in the Vs... parameter pack can fit here
      */
     static const size_t data_size = static_max<sizeof(Vs)...>::value;
-    static const size_t data_align = static_max<alignof(Vs)...>::value;
-    typename std::aligned_storage<data_size, data_align>::type buffer;
+    typename std::aligned_union<data_size, Vs...>::type buffer;
  
     /* 
      * the index in the template pack having the current type of the element

@@ -38,6 +38,10 @@ int main() {
 
     VariadicTemplatedType<int, string> temp {string{"hello"}};
     temp.apply_visitor([](const auto& var) { cout << var << endl; });
+    VariadicTemplatedType<int, double> temp1 {1};
+    cout << "size of VariadicTemplatedType<int, double> is " << sizeof(temp1)
+        << endl;
+    cout << sizeof(double) << endl;
     // cout << "index of the type type of temp is " << temp.current_type_index 
     //     << endl;
     {
@@ -47,6 +51,11 @@ int main() {
         SomethingElse temp_two {Something{}};
     }
     cout << "After destruction" << endl;
+
+    union U { double d; int a; };
+    std::aligned_union<8, int, double>::type buffer;
+    cout << "Size of the union is " << sizeof(U) << endl;
+    cout << "size of the buffer is " << sizeof(buffer) << endl;
 
     return 0;
 }
