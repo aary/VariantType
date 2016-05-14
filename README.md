@@ -12,6 +12,6 @@ unit tests type in ``make test``.
 
 Note: Another variant type implemented with some template metaprogramming is
 under development and is placed in the `template_metaprogrammed_variant`
-folder.
+folder.  This will be further developed on the templates branch
 
 By Aaryaman Sagar (rmn100@gmail.com) 
