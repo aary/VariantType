@@ -13,7 +13,9 @@ unit tests type in ``make test``.
 Note: Development for this repository is not continuing at the moment on the
 master branch as I am exploring another way to go about acheiving variance
 with template metaprogramming.  Run
-``git checkout templated`` 
+
+```git checkout templated```
+
 For more details
 
 By Aaryaman Sagar (rmn100@gmail.com) 
