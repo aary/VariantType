@@ -1,7 +1,7 @@
 # VariantType
 
 A C++ union based variant type class implemented with compile time
-polymorphism 
+polymorphism.
 
 ### Building
 This project relies on several features of C++14 that are incompatible with
