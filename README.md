@@ -14,7 +14,7 @@ Note: Development for this repository is not continuing at the moment on the
 master branch as I am exploring another way to go about acheiving variance
 with template metaprogramming.  Run
 
-```
+```shell
 git checkout templated
 ```
 
