@@ -73,7 +73,7 @@ public:
      * downsides of POD types in an object oriented language.  placement new
      * goes a long way in mitigating the damages
      */
-    static const size_t data_size = static_max<sizeof(Vs)...>::value;
+    constexpr static const size_t data_size = StaticMax<sizeof(Vs)...>::value;
     typename std::aligned_union<data_size, Vs...>::type buffer;
  
     /* 

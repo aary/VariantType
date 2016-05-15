@@ -56,6 +56,11 @@ struct apply_functor_conditionally_to_appropriate_type {
     static void apply(Function function, Variant& variant, 
             Others&... others) {
 
+        // assert that others and this are of the same type
+        static_assert(AreAllSame<Variant, Others...>::value, "All the types passed "
+                "in to the parameter pack when applying a functor "
+                "polymorphically should be the same");
+
         // simulate switch(variant.current_type_index) using compile time
         // recursion, first initiate the check here and then do the check on
         // the next integer smaller than this, so if the variant type is of
@@ -68,13 +73,21 @@ struct apply_functor_conditionally_to_appropriate_type {
         // Currently no static asserts are done on the type of the other
         // parameters.  TODO I will add this later.
         if (variant.current_type_index == which_type) {
+
+            // get the type of the object stored at the moment in the variant
             using TypeStored = 
                 typename Variant::template GetType<which_type>::type;
+
+            // call the function with all the inner data of all the variants
+            // passed into the function all cast to the same type
             function(variant.template cast_and_return_data<TypeStored>(),
                     others.template cast_and_return_data<TypeStored>()...);
         }
 
-        // compile time tail recursion?
+        // compile time tail recursion?  Whatever this is is pretty cool.
+        // Compiler will probably inline this since the function calls are so
+        // tiny when compilation is finished and the templates have been
+        // unrolled.
         else {
             return apply_functor_conditionally_to_appropriate_type<which_type - 1>
                 ::apply(function, variant, others...);
