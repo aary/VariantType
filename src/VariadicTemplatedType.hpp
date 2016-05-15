@@ -15,7 +15,7 @@
 #include <iostream>
 #include <tuple>
 #include <type_traits>
-#include "template_metaprogrammed_variant_utilities.hpp"
+#include "Utilities.hpp"
 using std::cout;
 using std::endl;
 using std::string;
@@ -104,4 +104,4 @@ private:
     friend struct apply_functor_conditionally_to_appropriate_type;
 };
 
-#include "template_metaprogrammed_variant.ipp"
+#include "VariadicTemplatedType.ipp"

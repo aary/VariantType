@@ -4,7 +4,7 @@
 #include <iostream>
 #include <tuple>
 #include <type_traits>
-#include "template_metaprogrammed_variant.hpp"
+#include "VariadicTemplatedType.hpp"
 using std::cout;
 using std::endl;
 using std::string;
