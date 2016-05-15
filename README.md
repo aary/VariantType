@@ -10,8 +10,10 @@ previous versions of C++ so this must be compiled with C++14.  The header
 implementations are in the other .cpp files in the /src directory.  To run the
 unit tests type in ``make test``. 
 
-Note: Another variant type implemented with some template metaprogramming is
-under development and is placed in the `template_metaprogrammed_variant`
-folder.  This will be further developed on the templates branch
+Note: Development for this repository is not continuing at the moment on the
+master branch as I am exploring another way to go about acheiving variance
+with template metaprogramming.  Run
+``git checkout templated`` 
+For more details
 
 By Aaryaman Sagar (rmn100@gmail.com) 
